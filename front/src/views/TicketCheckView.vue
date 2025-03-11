@@ -1,13 +1,44 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
+import { useRoute } from 'vue-router'
 import type { User } from '../types'
+import { useTicketStore } from '../stores/tickets'
+import movieData from '../data/movies.json'
+
+const route = useRoute()
+const ticketStore = useTicketStore()
 
 const email = ref('')
 const user = ref<User | null>(null)
 const error = ref('')
 
+onMounted(() => {
+  // If email is provided in query params, auto-fill and check tickets
+  if (route.query.email) {
+    email.value = route.query.email as string
+    checkTickets()
+  }
+})
+
+const getMovieTitle = (sessionId: number) => {
+  const session = movieData.sessions.find(s => s.session.id === sessionId)
+  return session?.movie.title || 'Unknown Movie'
+}
+
 const checkTickets = async () => {
-  // TODO: Implement ticket checking logic
+  error.value = ''
+  const tickets = ticketStore.getTicketsByEmail(email.value)
+  
+  if (tickets.length === 0) {
+    error.value = 'No s\'han trobat entrades per aquest email'
+    user.value = null
+    return
+  }
+
+  user.value = {
+    email: email.value,
+    tickets
+  }
 }
 </script>
 
@@ -41,9 +72,10 @@ const checkTickets = async () => {
       <div v-if="user">
         <h2 class="text-2xl font-bold mb-4">Les teves entrades</h2>
         <div v-for="ticket in user.tickets" :key="ticket.id" class="bg-white rounded-lg shadow-md p-4 mb-4">
-          <p><strong>Sessió:</strong> {{ ticket.sessionId }}</p>
+          <p class="font-bold mb-2">{{ getMovieTitle(ticket.sessionId) }}</p>
           <p><strong>Seient:</strong> {{ ticket.row }}{{ ticket.number }}</p>
           <p><strong>Preu:</strong> {{ ticket.price }}€</p>
+          <p class="text-sm text-gray-600">Reservat per: {{ ticket.customerName }}</p>
         </div>
       </div>
     </div>

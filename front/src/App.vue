@@ -9,20 +9,29 @@
           <router-link :to="{ name: 'home' }" class="text-xl font-bold">
             Cinema Pedralbes
           </router-link>
-          <div class="flex space-x-4">
+          <div class="flex items-center space-x-4">
+            <div class="flex space-x-4">
+              <router-link
+                :to="{ name: 'sessions' }"
+                class="px-3 py-2 rounded-md hover:bg-gray-100"
+                active-class="bg-gray-100"
+              >
+                Sessions
+              </router-link>
+              <router-link
+                :to="{ name: 'check-tickets' }"
+                class="px-3 py-2 rounded-md hover:bg-gray-100"
+                active-class="bg-gray-100"
+              >
+                Les meves entrades
+              </router-link>
+            </div>
+            <div class="border-l border-gray-200 h-6 mx-2"></div>
             <router-link
-              :to="{ name: 'sessions' }"
-              class="px-3 py-2 rounded-md hover:bg-gray-100"
-              active-class="bg-gray-100"
+              :to="{ name: 'admin' }"
+              class="px-3 py-2 rounded-md bg-blue-600 text-white hover:bg-blue-700"
             >
-              Sessions
-            </router-link>
-            <router-link
-              :to="{ name: 'check-tickets' }"
-              class="px-3 py-2 rounded-md hover:bg-gray-100"
-              active-class="bg-gray-100"
-            >
-              Les meves entrades
+              Admin
             </router-link>
           </div>
         </div>
