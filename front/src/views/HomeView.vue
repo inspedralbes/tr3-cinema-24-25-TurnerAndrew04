@@ -2,30 +2,12 @@
 import { ref, onMounted } from 'vue'
 import type { Session, Movie } from '../types'
 import SessionCard from '../components/SessionCard.vue'
+import movieData from '../data/movies.json'
 
 const featuredSessions = ref<Array<{ session: Session, movie: Movie }>>([])
 
 onMounted(async () => {
-  // Sample featured sessions
-  featuredSessions.value = [
-    {
-      session: {
-        id: 1,
-        movieId: "tt0468569",
-        date: "2025-03-20",
-        time: "16:00",
-        isSpecialDay: false
-      },
-      movie: {
-        id: "tt0468569",
-        title: "The Dark Knight",
-        year: "2008",
-        poster: "https://m.media-amazon.com/images/M/MV5BMTMxNTMwODM0NF5BMl5BanBnXkFtZTcwODAyMTk2Mw@@._V1_SX300.jpg",
-        plot: "When the menace known as the Joker wreaks havoc and chaos on the people of Gotham, Batman must accept one of the greatest psychological and physical tests of his ability to fight injustice.",
-        duration: "152 min"
-      }
-    }
-  ]
+  featuredSessions.value = movieData.sessions
 })
 </script>
 
@@ -40,7 +22,7 @@ onMounted(async () => {
       <h2 class="text-2xl font-bold mb-6">Sessions destacades</h2>
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         <SessionCard
-          v-for="({ session, movie }) in featuredSessions"
+          v-for="{ session, movie } in featuredSessions"
           :key="session.id"
           :session="session"
           :movie="movie"
