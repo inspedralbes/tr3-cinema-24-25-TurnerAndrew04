@@ -3,7 +3,7 @@ import { ref, computed } from 'vue'
 import axios from 'axios'
 import Cookies from 'js-cookie'
 
-const API_URL = 'http://localhost:8000/api'
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api'
 
 export const useAuthStore = defineStore('auth', () => {
   const user = ref<any>(null)
@@ -16,6 +16,11 @@ export const useAuthStore = defineStore('auth', () => {
       const response = await axios.post(`${API_URL}/login`, {
         email,
         password
+      }, {
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        }
       })
       
       token.value = response.data.token
@@ -27,7 +32,8 @@ export const useAuthStore = defineStore('auth', () => {
       
       return response.data
     } catch (error: any) {
-      throw new Error(error.response?.data?.message || 'Error during login')
+      const message = error.response?.data?.message || error.response?.data?.error || 'Error during login'
+      throw new Error(message)
     }
   }
 
@@ -38,6 +44,11 @@ export const useAuthStore = defineStore('auth', () => {
         email,
         password,
         password_confirmation: password
+      }, {
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        }
       })
       
       token.value = response.data.token
@@ -49,7 +60,8 @@ export const useAuthStore = defineStore('auth', () => {
       
       return response.data
     } catch (error: any) {
-      throw new Error(error.response?.data?.message || 'Error during registration')
+      const message = error.response?.data?.message || error.response?.data?.error || 'Error during registration'
+      throw new Error(message)
     }
   }
 
