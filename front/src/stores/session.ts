@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
-import type { Session, Seat, Ticket } from '../types'
+import type { Session, Seat } from '../types'
 
 export const useSessionStore = defineStore('session', () => {
   const selectedSeats = ref<Seat[]>([])
