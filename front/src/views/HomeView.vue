@@ -21,12 +21,8 @@ onMounted(async () => {
     <div class="mb-12">
       <h2 class="text-2xl font-bold mb-6">Sessions destacades</h2>
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <SessionCard
-          v-for="{ session, movie } in featuredSessions"
-          :key="session.id"
-          :session="session"
-          :movie="movie"
-        />
+        <SessionCard v-for="{ session, movie } in featuredSessions" :key="session.id" :session="session"
+          :movie="movie" />
       </div>
     </div>
 
@@ -35,10 +31,8 @@ onMounted(async () => {
       <p class="text-gray-600 mb-6">
         Descobreix les millors pel·lícules i reserva els teus seients preferits
       </p>
-      <router-link
-        :to="{ name: 'sessions' }"
-        class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 inline-block"
-      >
+      <router-link :to="{ name: 'sessions' }"
+        class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 inline-block">
         Veure totes les sessions
       </router-link>
     </div>
