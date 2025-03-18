@@ -27,7 +27,7 @@ const generateReport = async () => {
       <div v-if="report" class="mt-8">
         <h3 class="text-xl font-bold mb-4">Resum de la sessió</h3>
         
-        <!-- <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
           <div>
             <h4 class="font-bold mb-2">Entrades venudes</h4>
             <p>Normal: {{ report?.normalTickets }}</p>
@@ -41,7 +41,7 @@ const generateReport = async () => {
             <p>VIP: {{ report?.vipRevenue }}€</p>
             <p class="font-bold mt-2">Total: {{ report?.totalRevenue }}€</p>
           </div>
-        </div> -->
+        </div>
       </div>
     </div>
   </div>

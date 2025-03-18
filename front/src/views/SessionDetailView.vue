@@ -3,14 +3,14 @@ import { ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import type { Session, Movie, Seat } from '../types'
 import { useSessionStore } from '../stores/session'
-// import { useTicketStore } from '../stores/tickets'
+import { useTicketStore } from '../stores/tickets'
 import SeatMap from '../components/SeatMap.vue'
 import movieData from '../data/movies.json'
 
 const route = useRoute()
 const router = useRouter()
 const sessionStore = useSessionStore()
-// const ticketStore = useTicketStore()
+const ticketStore = useTicketStore()
 
 const session = ref<Session | null>(null)
 const movie = ref<Movie | null>(null)
@@ -50,22 +50,22 @@ const handleSubmit = async () => {
   }
   
   // Create tickets for each selected seat
-  // sessionStore.selectedSeats.forEach(seat => {
-  //   const ticket: Ticket = {
-  //     id: Math.floor(Math.random() * 1000000), // Generate random ID for demo
-  //     sessionId: session.value!.id,
-  //     row: seat.row,
-  //     number: seat.number,
-  //     price: seat.isVip ? 8 : 6,
-  //     customerName: customerData.value.name,
-  //     customerEmail: customerData.value.email,
-  //     customerPhone: customerData.value.phone
-  //   }
-  //   ticketStore.addTicket(customerData.value.email, ticket)
-  // })
+  sessionStore.selectedSeats.forEach(seat => {
+    const ticket: Ticket = {
+      id: Math.floor(Math.random() * 1000000), // Generate random ID for demo
+      sessionId: session.value!.id,
+      row: seat.row,
+      number: seat.number,
+      price: seat.isVip ? 8 : 6,
+      customerName: customerData.value.name,
+      customerEmail: customerData.value.email,
+      customerPhone: customerData.value.phone
+    }
+    ticketStore.addTicket(customerData.value.email, ticket)
+  })
 
-  // alert(`Compra realitzada amb èxit!\n\nEntrades: ${sessionStore.selectedSeats.length}\nTotal: ${sessionStore.totalPrice}€`)
-  // sessionStore.clearSelection()
+  alert(`Compra realitzada amb èxit!\n\nEntrades: ${sessionStore.selectedSeats.length}\nTotal: ${sessionStore.totalPrice}€`)
+  sessionStore.clearSelection()
   
   // Redirect to ticket check view
   router.push({

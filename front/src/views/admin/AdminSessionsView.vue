@@ -13,9 +13,9 @@ const createSession = async () => {
   // TODO: Implement session creation logic
 }
 
-// const searchMovie = async (query: string) => {
-//   // TODO: Implement OMDB API search
-// }
+const searchMovie = async (query: string) => {
+  // TODO: Implement OMDB API search
+}
 </script>
 
 <template>
@@ -30,6 +30,7 @@ const createSession = async () => {
           <label class="block text-gray-700 mb-2">Pel·lícula (OMDB)</label>
           <input
             type="text"
+            @input="e => searchMovie((e.target as HTMLInputElement).value)"
             class="w-full px-3 py-2 border rounded"
           >
         </div>
