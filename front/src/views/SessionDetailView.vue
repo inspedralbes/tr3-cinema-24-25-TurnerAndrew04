@@ -22,7 +22,7 @@ const customerData = ref({
   phone: ''
 })
 
-// First random number generator
+// Pseudo-random number generator with seed
 function seededRandom(seed: number) {
   const x = Math.sin(seed) * 10000
   return x - Math.floor(x)
@@ -104,68 +104,117 @@ const handleSubmit = async () => {
 </script>
 
 <template>
-  <div class="container mx-auto px-4 py-8" v-if="session && movie">
-    <div class="bg-white rounded-lg shadow-md p-8">
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
-        <div>
-          <img :src="movie.poster" :alt="movie.title" class="w-full rounded">
+  <div class="min-h-screen bg-[var(--background)]" v-if="session && movie">
+    <!-- Movie Hero Section -->
+    <div class="relative h-[50vh] overflow-hidden">
+      <div class="absolute inset-0 bg-gradient-to-b from-transparent via-[var(--background)] to-[var(--background)]"></div>
+      <img 
+        :src="movie.poster" 
+        :alt="movie.title"
+        class="w-full h-full object-cover opacity-50"
+      >
+    </div>
+
+    <div class="container mx-auto px-4 -mt-32 relative z-10">
+      <div class="bg-[var(--surface)] rounded-lg shadow-xl overflow-hidden">
+        <div class="p-8">
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Movie Poster -->
+            <div class="lg:col-span-1">
+              <img 
+                :src="movie.poster" 
+                :alt="movie.title" 
+                class="w-full rounded-lg shadow-lg"
+              >
+            </div>
+
+            <!-- Movie Info -->
+            <div class="lg:col-span-2">
+              <h1 class="text-4xl font-bold mb-4">{{ movie.title }}</h1>
+              <p class="text-[var(--text-secondary)] mb-6">{{ movie.plot }}</p>
+              
+              <div class="grid grid-cols-2 gap-4 mb-6">
+                <div>
+                  <p class="text-[var(--text-secondary)]">Data</p>
+                  <p class="text-lg">{{ new Date(session.date).toLocaleDateString('ca') }}</p>
+                </div>
+                <div>
+                  <p class="text-[var(--text-secondary)]">Hora</p>
+                  <p class="text-lg">{{ session.time }}</p>
+                </div>
+                <div>
+                  <p class="text-[var(--text-secondary)]">Duració</p>
+                  <p class="text-lg">{{ movie.duration }}</p>
+                </div>
+                <div v-if="session.isSpecialDay">
+                  <p class="text-[var(--primary)] font-semibold">Dia de l'espectador</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Seat Selection -->
+          <div class="mt-12">
+            <h2 class="text-2xl font-bold mb-6">Selecció de seients</h2>
+            <div class="bg-[var(--background)] p-8 rounded-lg">
+              <SeatMap :seats="seats" />
+            </div>
+          </div>
+
+          <!-- Purchase Form -->
+          <div class="mt-12" v-if="sessionStore.selectedSeats.length > 0">
+            <h2 class="text-2xl font-bold mb-6">Dades de compra</h2>
+            <form @submit.prevent="handleSubmit" class="max-w-md">
+              <div class="space-y-4">
+                <div>
+                  <label class="block text-[var(--text-secondary)] mb-2">Nom complet</label>
+                  <input
+                    v-model="customerData.name"
+                    type="text"
+                    required
+                    class="w-full px-4 py-2 rounded-lg bg-[var(--background)] border border-gray-700 text-[var(--text)] focus:outline-none focus:border-[var(--primary)]"
+                  >
+                </div>
+                <div>
+                  <label class="block text-[var(--text-secondary)] mb-2">Email</label>
+                  <input
+                    v-model="customerData.email"
+                    type="email"
+                    required
+                    class="w-full px-4 py-2 rounded-lg bg-[var(--background)] border border-gray-700 text-[var(--text)] focus:outline-none focus:border-[var(--primary)]"
+                  >
+                </div>
+                <div>
+                  <label class="block text-[var(--text-secondary)] mb-2">Telèfon</label>
+                  <input
+                    v-model="customerData.phone"
+                    type="tel"
+                    required
+                    class="w-full px-4 py-2 rounded-lg bg-[var(--background)] border border-gray-700 text-[var(--text)] focus:outline-none focus:border-[var(--primary)]"
+                  >
+                </div>
+                
+                <div class="pt-4 border-t border-gray-700">
+                  <div class="flex justify-between items-center mb-4">
+                    <span class="text-[var(--text-secondary)]">
+                      Seients seleccionats: {{ sessionStore.selectedSeats.length }}
+                    </span>
+                    <span class="text-2xl font-bold">
+                      Total: {{ sessionStore.totalPrice }}€
+                    </span>
+                  </div>
+
+                  <button
+                    type="submit"
+                    class="w-full btn-primary"
+                  >
+                    Confirmar compra
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
         </div>
-        <div>
-          <h1 class="text-3xl font-bold mb-4">{{ movie.title }}</h1>
-          <p class="text-gray-600 mb-4">{{ movie.plot }}</p>
-          <div class="mb-4">
-            <p><strong>Data:</strong> {{ new Date(session.date).toLocaleDateString('ca') }}</p>
-            <p><strong>Hora:</strong> {{ session.time }}</p>
-            <p><strong>Duració:</strong> {{ movie.duration }}</p>
-            <p v-if="session.isSpecialDay" class="text-red-600 font-semibold">Dia de l'espectador</p>
-          </div>
-        </div>
-      </div>
-
-      <SeatMap :seats="seats" />
-
-      <div class="mt-8" v-if="sessionStore.selectedSeats.length > 0">
-        <h2 class="text-2xl font-bold mb-4">Dades de compra</h2>
-        <form @submit.prevent="handleSubmit" class="max-w-md">
-          <div class="mb-4">
-            <label class="block text-gray-700 mb-2">Nom complet</label>
-            <input
-              v-model="customerData.name"
-              type="text"
-              required
-              class="w-full px-3 py-2 border rounded"
-            >
-          </div>
-          <div class="mb-4">
-            <label class="block text-gray-700 mb-2">Email</label>
-            <input
-              v-model="customerData.email"
-              type="email"
-              required
-              class="w-full px-3 py-2 border rounded"
-            >
-          </div>
-          <div class="mb-4">
-            <label class="block text-gray-700 mb-2">Telèfon</label>
-            <input
-              v-model="customerData.phone"
-              type="tel"
-              required
-              class="w-full px-3 py-2 border rounded"
-            >
-          </div>
-          
-          <div class="mb-4">
-            <p class="text-xl font-bold">Total: {{ sessionStore.totalPrice }}€</p>
-          </div>
-
-          <button
-            type="submit"
-            class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700"
-          >
-            Confirmar compra
-          </button>
-        </form>
       </div>
     </div>
   </div>
