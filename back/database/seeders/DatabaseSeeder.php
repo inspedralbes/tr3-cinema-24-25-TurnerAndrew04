@@ -45,6 +45,16 @@ class DatabaseSeeder extends Seeder
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
+            [
+                'id' => 'tt0111161',
+                'title' => 'The Shawshank Redemption',
+                'year' => '1994',
+                'poster' => 'https://m.media-amazon.com/images/M/MV5BNDE3ODcxYzMtY2YzZC00NmNlLWJiNDMtZDViZWM2MzIxZDYwXkEyXkFqcGdeQXVyNjAwNDUxODI@._V1_SX300.jpg',
+                'plot' => 'Two imprisoned men bond over a number of years, finding solace and eventual redemption through acts of common decency.',
+                'duration' => '142 min',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
         ];
 
         foreach ($movies as $movie) {
@@ -65,33 +75,30 @@ class DatabaseSeeder extends Seeder
             }
         }
 
-        // Create sessions and link seats
+        // Create one session per day
         $dates = ['2025-03-20', '2025-03-21', '2025-03-22'];
-        $times = ['16:00', '18:00'];
         $movieIds = array_column($movies, 'id');
         
-        foreach ($dates as $date) {
-            foreach ($times as $index => $time) {
-                $session = CinemaSession::create([
-                    'movie_id' => $movieIds[$index % count($movieIds)],
-                    'date' => $date,
-                    'time' => $time,
-                    'is_special_day' => $index === 1,
+        foreach ($dates as $index => $date) {
+            $session = CinemaSession::create([
+                'movie_id' => $movieIds[$index % count($movieIds)],
+                'date' => $date,
+                'time' => '18:00',
+                'is_special_day' => $index === 1, // Make the second day special
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+
+            // Link all seats to this session
+            $seats = Seat::all();
+            foreach ($seats as $seat) {
+                DB::table('session_seats')->insert([
+                    'cinema_session_id' => $session->id,
+                    'seat_id' => $seat->id,
+                    'is_occupied' => false,
                     'created_at' => now(),
                     'updated_at' => now(),
                 ]);
-
-                // Link all seats to this session
-                $seats = Seat::all();
-                foreach ($seats as $seat) {
-                    DB::table('session_seats')->insert([
-                        'cinema_session_id' => $session->id,
-                        'seat_id' => $seat->id,
-                        'is_occupied' => false,
-                        'created_at' => now(),
-                        'updated_at' => now(),
-                    ]);
-                }
             }
         }
     }

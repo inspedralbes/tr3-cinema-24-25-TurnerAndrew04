@@ -1,106 +1,55 @@
 {
-    "sessions": [
-      {
-        "session": {
-          "id": 1,
-          "movieId": "tt0468569",
-          "date": "2025-03-20",
-          "time": "16:00",
-          "isSpecialDay": false
-        },
-        "movie": {
-          "id": "tt0468569",
-          "title": "The Dark Knight",
-          "year": "2008",
-          "poster": "https://m.media-amazon.com/images/M/MV5BMTMxNTMwODM0NF5BMl5BanBnXkFtZTcwODAyMTk2Mw@@._V1_SX300.jpg",
-          "plot": "When the menace known as the Joker wreaks havoc and chaos on the people of Gotham, Batman must accept one of the greatest psychological and physical tests of his ability to fight injustice.",
-          "duration": "152 min"
-        }
+  "sessions": [
+    {
+      "session": {
+        "id": 1,
+        "movieId": "tt0468569",
+        "date": "2025-03-20",
+        "time": "18:00",
+        "isSpecialDay": false
       },
-      {
-        "session": {
-          "id": 2,
-          "movieId": "tt0109830",
-          "date": "2025-03-20",
-          "time": "18:00",
-          "isSpecialDay": true
-        },
-        "movie": {
-          "id": "tt0109830",
-          "title": "Forrest Gump",
-          "year": "1994",
-          "poster": "https://m.media-amazon.com/images/M/MV5BNWIwODRlZTUtY2U3ZS00Yzg1LWJhNzYtMmZiYmEyNmU1NjMzXkEyXkFqcGdeQXVyMTQxNzMzNDI@._V1_SX300.jpg",
-          "plot": "The presidencies of Kennedy and Johnson, the Vietnam War, the Watergate scandal and other historical events unfold from the perspective of an Alabama man with an IQ of 75.",
-          "duration": "142 min"
-        }
-      },
-      {
-        "session": {
-          "id": 3,
-          "movieId": "tt0111161",
-          "date": "2025-03-21",
-          "time": "16:00",
-          "isSpecialDay": false
-        },
-        "movie": {
-          "id": "tt0111161",
-          "title": "The Shawshank Redemption",
-          "year": "1994",
-          "poster": "https://m.media-amazon.com/images/M/MV5BNDE3ODcxYzMtY2YzZC00NmNlLWJiNDMtZDViZWM2MzIxZDYwXkEyXkFqcGdeQXVyNjAwNDUxODI@._V1_SX300.jpg",
-          "plot": "Two imprisoned men bond over a number of years, finding solace and eventual redemption through acts of common decency.",
-          "duration": "142 min"
-        }
-      },
-      {
-        "session": {
-          "id": 4,
-          "movieId": "tt0468569",
-          "date": "2025-03-21",
-          "time": "18:00",
-          "isSpecialDay": true
-        },
-        "movie": {
-          "id": "tt0468569",
-          "title": "The Dark Knight",
-          "year": "2008",
-          "poster": "https://m.media-amazon.com/images/M/MV5BMTMxNTMwODM0NF5BMl5BanBnXkFtZTcwODAyMTk2Mw@@._V1_SX300.jpg",
-          "plot": "When the menace known as the Joker wreaks havoc and chaos on the people of Gotham, Batman must accept one of the greatest psychological and physical tests of his ability to fight injustice.",
-          "duration": "152 min"
-        }
-      },
-      {
-        "session": {
-          "id": 5,
-          "movieId": "tt0109830",
-          "date": "2025-03-22",
-          "time": "16:00",
-          "isSpecialDay": false
-        },
-        "movie": {
-          "id": "tt0109830",
-          "title": "Forrest Gump",
-          "year": "1994",
-          "poster": "https://m.media-amazon.com/images/M/MV5BNWIwODRlZTUtY2U3ZS00Yzg1LWJhNzYtMmZiYmEyNmU1NjMzXkEyXkFqcGdeQXVyMTQxNzMzNDI@._V1_SX300.jpg",
-          "plot": "The presidencies of Kennedy and Johnson, the Vietnam War, the Watergate scandal and other historical events unfold from the perspective of an Alabama man with an IQ of 75.",
-          "duration": "142 min"
-        }
-      },
-      {
-        "session": {
-          "id": 6,
-          "movieId": "tt0111161",
-          "date": "2025-03-22",
-          "time": "18:00",
-          "isSpecialDay": true
-        },
-        "movie": {
-          "id": "tt0111161",
-          "title": "The Shawshank Redemption",
-          "year": "1994",
-          "poster": "https://m.media-amazon.com/images/M/MV5BNDE3ODcxYzMtY2YzZC00NmNlLWJiNDMtZDViZWM2MzIxZDYwXkEyXkFqcGdeQXVyNjAwNDUxODI@._V1_SX300.jpg",
-          "plot": "Two imprisoned men bond over a number of years, finding solace and eventual redemption through acts of common decency.",
-          "duration": "142 min"
-        }
+      "movie": {
+        "id": "tt0468569",
+        "title": "The Dark Knight",
+        "year": "2008",
+        "poster": "https://m.media-amazon.com/images/M/MV5BMTMxNTMwODM0NF5BMl5BanBnXkFtZTcwODAyMTk2Mw@@._V1_SX300.jpg",
+        "plot": "When the menace known as the Joker wreaks havoc and chaos on the people of Gotham, Batman must accept one of the greatest psychological and physical tests of his ability to fight injustice.",
+        "duration": "152 min"
       }
-    ]
-  }
+    },
+    {
+      "session": {
+        "id": 2,
+        "movieId": "tt0109830",
+        "date": "2025-03-21",
+        "time": "18:00",
+        "isSpecialDay": true
+      },
+      "movie": {
+        "id": "tt0109830",
+        "title": "Forrest Gump",
+        "year": "1994",
+        "poster": "https://m.media-amazon.com/images/M/MV5BNWIwODRlZTUtY2U3ZS00Yzg1LWJhNzYtMmZiYmEyNmU1NjMzXkEyXkFqcGdeQXVyMTQxNzMzNDI@._V1_SX300.jpg",
+        "plot": "The presidencies of Kennedy and Johnson, the Vietnam War, the Watergate scandal and other historical events unfold from the perspective of an Alabama man with an IQ of 75.",
+        "duration": "142 min"
+      }
+    },
+    {
+      "session": {
+        "id": 3,
+        "movieId": "tt0111161",
+        "date": "2025-03-22",
+        "time": "18:00",
+        "isSpecialDay": false
+      },
+      "movie": {
+        "id": "tt0111161",
+        "title": "The Shawshank Redemption",
+        "year": "1994",
+        "poster": "https://m.media-amazon.com/images/M/MV5BNDE3ODcxYzMtY2YzZC00NmNlLWJiNDMtZDViZWM2MzIxZDYwXkEyXkFqcGdeQXVyNjAwNDUxODI@._V1_SX300.jpg",
+        "plot": "Two imprisoned men bond over a number of years, finding solace and eventual redemption through acts of common decency.",
+        "duration": "142 min"
+      }
+    }
+  ]
+}

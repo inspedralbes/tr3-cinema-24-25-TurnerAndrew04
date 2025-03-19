@@ -16,19 +16,20 @@ const formattedTime = computed(() => {
 </script>
 
 <template>
-  <div class="bg-white rounded-lg shadow-md p-4 hover:shadow-lg transition-shadow">
-    <img :src="movie.poster" :alt="movie.title" class="w-full h-48 object-cover rounded mb-4">
-    <h3 class="text-xl font-bold mb-2">{{ movie.title }}</h3>
-    <div class="text-gray-600">
-      <p>{{ new Date(session.date).toLocaleDateString('ca') }}</p>
-      <p>{{ formattedTime }}</p>
-      <p v-if="session.isSpecialDay" class="text-red-600 font-semibold">Dia de l'espectador</p>
+  <div class="movie-card">
+    <img :src="movie.poster" :alt="movie.title" class="w-full">
+    <div class="movie-card-content">
+      <h3 class="text-2xl font-bold mb-2">{{ movie.title }}</h3>
+      <div class="text-gray-300 mb-4">
+        <p>{{ new Date(session.date).toLocaleDateString('ca') }} - {{ formattedTime }}</p>
+        <p v-if="session.isSpecialDay" class="text-[var(--primary)] font-semibold">Dia de l'espectador</p>
+      </div>
+      <router-link 
+        :to="{ name: 'session-detail', params: { id: session.id }}"
+        class="btn-primary inline-block"
+      >
+        Comprar entrades
+      </router-link>
     </div>
-    <router-link 
-      :to="{ name: 'session-detail', params: { id: session.id }}"
-      class="mt-4 inline-block bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-    >
-      Comprar entrades
-    </router-link>
   </div>
 </template>

@@ -3,18 +3,94 @@
 @tailwind utilities;
 
 :root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
+  --primary: #e50914;
+  --primary-dark: #b2070f;
+  --background: #141414;
+  --surface: #1f1f1f;
+  --text: #ffffff;
+  --text-secondary: #b3b3b3;
 }
 
 body {
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
+  background-color: var(--background);
+  color: var(--text);
+  font-family: 'Inter', sans-serif;
 }
 
-#app {
-  width: 100%;
-  margin: 0 auto;
+.movie-card {
+  @apply relative overflow-hidden rounded-lg transition-transform duration-300;
+  background: var(--surface);
+}
+
+.movie-card:hover {
+  @apply transform scale-105 shadow-2xl;
+}
+
+.movie-card img {
+  @apply w-full h-[400px] object-cover;
+}
+
+.movie-card-content {
+  @apply absolute bottom-0 left-0 right-0 p-6;
+  background: linear-gradient(transparent, rgba(0, 0, 0, 0.9) 30%);
+}
+
+.btn-primary {
+  @apply px-6 py-3 rounded-md font-semibold transition-colors duration-200;
+  background-color: var(--primary);
+  color: var(--text);
+}
+
+.btn-primary:hover {
+  background-color: var(--primary-dark);
+}
+
+.nav-link {
+  @apply px-4 py-2 rounded-md transition-colors duration-200;
+  color: var(--text-secondary);
+}
+
+.nav-link:hover, .nav-link.active {
+  color: var(--text);
+  background-color: var(--surface);
+}
+
+.seat-grid {
+  @apply grid gap-2;
+  perspective: 1000px;
+}
+
+.seat-row {
+  @apply flex gap-2 items-center;
+  transform-style: preserve-3d;
+  transform: rotateX(20deg);
+}
+
+.seat {
+  @apply w-8 h-8 rounded flex items-center justify-center transition-all duration-200 cursor-pointer;
+  background: var(--surface);
+  color: var(--text);
+  border: 1px solid #333;
+}
+
+.seat:not(:disabled):hover {
+  @apply transform scale-110;
+  border-color: var(--primary);
+}
+
+.seat.occupied {
+  background: #ff000033;
+  border-color: #ff0000;
+}
+
+.seat.selected {
+  background: var(--primary);
+  border-color: var(--primary);
+}
+
+.seat.vip {
+  border: 2px solid #ffd700;
 }
