@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import type { Session, Movie, Seat } from '../types'
+import type { Session, Movie, Seat, Ticket } from '../types'
 import { useSessionStore } from '../stores/session'
 import { useTicketStore } from '../stores/tickets'
 import SeatMap from '../components/SeatMap.vue'
@@ -22,22 +22,53 @@ const customerData = ref({
   phone: ''
 })
 
+// Pseudo-random number generator with seed
+function seededRandom(seed: number) {
+  const x = Math.sin(seed) * 10000
+  return x - Math.floor(x)
+}
+
+// Function to determine if a seat should be occupied based on session ID
+function isOccupied(sessionId: number, row: string, number: number): boolean {
+  // Create a unique seed for each seat in each session
+  const seed = sessionId + row.charCodeAt(0) * 100 + number
+  // Use the seeded random number to determine occupation
+  // Different multipliers for different rows to create varied patterns
+  const randomValue = seededRandom(seed)
+  
+  // Create different occupation patterns based on row position
+  const rowIndex = row.charCodeAt(0) - 'A'.charCodeAt(0)
+  
+  // Front rows (A-D): 40% chance
+  if (rowIndex < 4) {
+    return randomValue < 0.4
+  }
+  // Middle rows (E-H): 30% chance
+  else if (rowIndex < 8) {
+    return randomValue < 0.3
+  }
+  // Back rows (I-L): 20% chance
+  else {
+    return randomValue < 0.2
+  }
+}
+
 onMounted(async () => {
   const sessionId = parseInt(route.params.id as string)
   const selectedSession = movieData.sessions.find(s => s.session.id === sessionId)
-
+  
   if (selectedSession) {
     session.value = selectedSession.session
     movie.value = selectedSession.movie
-
-    // Generate sample seats data
+    
+    // Generate seats data with deterministic occupation
     const seatRows = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L']
-    seats.value = seatRows.flatMap(row =>
+    seats.value = seatRows.flatMap(row => 
       Array.from({ length: 10 }, (_, i) => ({
         row,
         number: i + 1,
         isVip: row === 'F',
-        isOccupied: Math.random() < 0.3 // 30% chance of being occupied
+        isOccupied: isOccupied(sessionId, row, i + 1)
       }))
     )
   }
@@ -48,7 +79,7 @@ const handleSubmit = async () => {
     alert('Selecciona almenys un seient')
     return
   }
-
+  
   // Create tickets for each selected seat
   sessionStore.selectedSeats.forEach(seat => {
     const ticket: Ticket = {
@@ -66,7 +97,7 @@ const handleSubmit = async () => {
 
   alert(`Compra realitzada amb èxit!\n\nEntrades: ${sessionStore.selectedSeats.length}\nTotal: ${sessionStore.totalPrice}€`)
   sessionStore.clearSelection()
-
+  
   // Redirect to ticket check view
   router.push({
     name: 'check-tickets',
@@ -101,22 +132,40 @@ const handleSubmit = async () => {
         <form @submit.prevent="handleSubmit" class="max-w-md">
           <div class="mb-4">
             <label class="block text-gray-700 mb-2">Nom complet</label>
-            <input v-model="customerData.name" type="text" required class="w-full px-3 py-2 border rounded">
+            <input
+              v-model="customerData.name"
+              type="text"
+              required
+              class="w-full px-3 py-2 border rounded"
+            >
           </div>
           <div class="mb-4">
             <label class="block text-gray-700 mb-2">Email</label>
-            <input v-model="customerData.email" type="email" required class="w-full px-3 py-2 border rounded">
+            <input
+              v-model="customerData.email"
+              type="email"
+              required
+              class="w-full px-3 py-2 border rounded"
+            >
           </div>
           <div class="mb-4">
             <label class="block text-gray-700 mb-2">Telèfon</label>
-            <input v-model="customerData.phone" type="tel" required class="w-full px-3 py-2 border rounded">
+            <input
+              v-model="customerData.phone"
+              type="tel"
+              required
+              class="w-full px-3 py-2 border rounded"
+            >
           </div>
-
+          
           <div class="mb-4">
             <p class="text-xl font-bold">Total: {{ sessionStore.totalPrice }}€</p>
           </div>
 
-          <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700">
+          <button
+            type="submit"
+            class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700"
+          >
             Confirmar compra
           </button>
         </form>
