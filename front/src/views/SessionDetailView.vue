@@ -30,25 +30,22 @@ function seededRandom(seed: number) {
 
 // Function to determine if a seat should be occupied based on session ID
 function isOccupied(sessionId: number, row: string, number: number): boolean {
-  // Create a unique seed for each seat in each session
+  // First check if the seat has been purchased
+  if (ticketStore.isSeatOccupied(sessionId, row, number)) {
+    return true
+  }
+
+  // If not purchased, use the seeded random occupation
   const seed = sessionId + row.charCodeAt(0) * 100 + number
-  // Use the seeded random number to determine occupation
-  // Different multipliers for different rows to create varied patterns
   const randomValue = seededRandom(seed)
   
-  // Create different occupation patterns based on row position
   const rowIndex = row.charCodeAt(0) - 'A'.charCodeAt(0)
   
-  // Front rows (A-D): 40% chance
   if (rowIndex < 4) {
     return randomValue < 0.4
-  }
-  // Middle rows (E-H): 30% chance
-  else if (rowIndex < 8) {
+  } else if (rowIndex < 8) {
     return randomValue < 0.3
-  }
-  // Back rows (I-L): 20% chance
-  else {
+  } else {
     return randomValue < 0.2
   }
 }
