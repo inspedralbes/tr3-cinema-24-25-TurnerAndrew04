@@ -15,6 +15,8 @@ const ticketStore = useTicketStore()
 const session = ref<Session | null>(null)
 const movie = ref<Movie | null>(null)
 const seats = ref<Seat[]>([])
+const isLoading = ref(false)
+const error = ref('')
 
 const customerData = ref({
   name: '',
@@ -73,33 +75,29 @@ onMounted(async () => {
 
 const handleSubmit = async () => {
   if (sessionStore.selectedSeats.length === 0) {
-    alert('Selecciona almenys un seient')
+    error.value = 'Selecciona almenys un seient'
     return
   }
-  
-  // Create tickets for each selected seat
-  sessionStore.selectedSeats.forEach(seat => {
-    const ticket: Ticket = {
-      id: Math.floor(Math.random() * 1000000), // Generate random ID for demo
-      sessionId: session.value!.id,
-      row: seat.row,
-      number: seat.number,
-      price: seat.isVip ? 8 : 6,
-      customerName: customerData.value.name,
-      customerEmail: customerData.value.email,
-      customerPhone: customerData.value.phone
-    }
-    ticketStore.addTicket(customerData.value.email, ticket)
-  })
 
-  alert(`Compra realitzada amb èxit!\n\nEntrades: ${sessionStore.selectedSeats.length}\nTotal: ${sessionStore.totalPrice}€`)
-  sessionStore.clearSelection()
+  error.value = ''
+  isLoading.value = true
   
-  // Redirect to ticket check view
-  router.push({
-    name: 'check-tickets',
-    query: { email: customerData.value.email }
-  })
+  try {
+    await sessionStore.purchaseTickets(
+      session.value!.id,
+      customerData.value
+    )
+
+    // Redirect to ticket check view
+    router.push({
+      name: 'check-tickets',
+      query: { email: customerData.value.email }
+    })
+  } catch (err: any) {
+    error.value = err.message
+  } finally {
+    isLoading.value = false
+  }
 }
 </script>
 
@@ -164,6 +162,11 @@ const handleSubmit = async () => {
           <!-- Purchase Form -->
           <div class="mt-12" v-if="sessionStore.selectedSeats.length > 0">
             <h2 class="text-2xl font-bold mb-6">Dades de compra</h2>
+            
+            <div v-if="error" class="mb-4 p-4 bg-red-500/20 border border-red-500 rounded-lg text-red-500">
+              {{ error }}
+            </div>
+
             <form @submit.prevent="handleSubmit" class="max-w-md">
               <div class="space-y-4">
                 <div>
@@ -172,6 +175,7 @@ const handleSubmit = async () => {
                     v-model="customerData.name"
                     type="text"
                     required
+                    :disabled="isLoading"
                     class="w-full px-4 py-2 rounded-lg bg-[var(--background)] border border-gray-700 text-[var(--text)] focus:outline-none focus:border-[var(--primary)]"
                   >
                 </div>
@@ -181,6 +185,7 @@ const handleSubmit = async () => {
                     v-model="customerData.email"
                     type="email"
                     required
+                    :disabled="isLoading"
                     class="w-full px-4 py-2 rounded-lg bg-[var(--background)] border border-gray-700 text-[var(--text)] focus:outline-none focus:border-[var(--primary)]"
                   >
                 </div>
@@ -190,6 +195,7 @@ const handleSubmit = async () => {
                     v-model="customerData.phone"
                     type="tel"
                     required
+                    :disabled="isLoading"
                     class="w-full px-4 py-2 rounded-lg bg-[var(--background)] border border-gray-700 text-[var(--text)] focus:outline-none focus:border-[var(--primary)]"
                   >
                 </div>
@@ -206,9 +212,11 @@ const handleSubmit = async () => {
 
                   <button
                     type="submit"
-                    class="w-full btn-primary"
+                    class="w-full btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
+                    :disabled="isLoading"
                   >
-                    Confirmar compra
+                    <span v-if="isLoading">Processant...</span>
+                    <span v-else>Confirmar compra</span>
                   </button>
                 </div>
               </div>
