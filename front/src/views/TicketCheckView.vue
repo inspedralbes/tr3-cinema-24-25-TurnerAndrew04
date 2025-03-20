@@ -27,9 +27,12 @@ const getMovieTitle = (sessionId: number) => {
 
 const checkTickets = async () => {
   error.value = ''
-  const tickets = ticketStore.getTicketsByEmail(email.value)
+  console.log('Checking tickets for:', email.value)
 
-  if (tickets.length === 0) {
+  const tickets = ticketStore.getTicketsByEmail(email.value)
+  console.log('Tickets found:', tickets)
+
+  if (!tickets || tickets.length === 0) {
     error.value = 'No s\'han trobat entrades per aquest email'
     user.value = null
     return
