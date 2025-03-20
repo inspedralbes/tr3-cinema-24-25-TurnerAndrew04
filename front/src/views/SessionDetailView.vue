@@ -74,6 +74,7 @@ onMounted(async () => {
 })
 
 const handleSubmit = async () => {
+  console.log("Selected seats:", sessionStore.selectedSeats);
   if (sessionStore.selectedSeats.length === 0) {
     error.value = 'Selecciona almenys un seient'
     return
