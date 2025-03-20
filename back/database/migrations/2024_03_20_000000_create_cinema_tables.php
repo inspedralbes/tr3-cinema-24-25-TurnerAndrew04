@@ -40,18 +40,18 @@ class CreateCinemaTables extends Migration
             $table->timestamps();
         });
 
-        Schema::create('tickets', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('session_id')->constrained('cinema_sessions')->onDelete('cascade');
-            $table->foreignId('seat_id')->constrained('seats')->onDelete('cascade');
-            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
-            $table->decimal('price', 8, 2);
-            $table->string('customer_name');
-            $table->string('customer_email');
-            $table->string('customer_phone');
-            $table->unique(['session_id', 'seat_id']); // Prevent double booking
-            $table->timestamps();
-        });
+        // Schema::create('tickets', function (Blueprint $table) {
+        //     $table->id();
+        //     $table->foreignId('session_id')->constrained('cinema_sessions')->onDelete('cascade');
+        //     $table->foreignId('seat_id')->constrained('seats')->onDelete('cascade');
+        //     $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
+        //     $table->decimal('price', 8, 2);
+        //     $table->string('customer_name');
+        //     $table->string('customer_email');
+        //     $table->string('customer_phone');
+        //     $table->unique(['session_id', 'seat_id']); // Prevent double booking
+        //     $table->timestamps();
+        // });
 
         // Add is_admin column to users table
         Schema::table('users', function (Blueprint $table) {

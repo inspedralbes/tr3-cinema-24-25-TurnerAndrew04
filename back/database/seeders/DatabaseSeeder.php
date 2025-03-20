@@ -92,7 +92,7 @@ class DatabaseSeeder extends Seeder
             // Link all seats to this session
             $seats = Seat::all();
             foreach ($seats as $seat) {
-                DB::table('session_seats')->insert([
+                DB::table('session_seat')->insert([
                     'cinema_session_id' => $session->id,
                     'seat_id' => $seat->id,
                     'is_occupied' => false,

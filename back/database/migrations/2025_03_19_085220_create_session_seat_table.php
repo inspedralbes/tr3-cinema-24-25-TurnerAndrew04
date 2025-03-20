@@ -13,6 +13,9 @@ return new class extends Migration
     {
         Schema::create('session_seat', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('cinema_session_id')->constrained('cinema_sessions')->onDelete('cascade');
+            $table->foreignId('seat_id')->constrained('seats')->onDelete('cascade');
+            $table->boolean('is_occupied')->default(false);
             $table->timestamps();
         });
     }
