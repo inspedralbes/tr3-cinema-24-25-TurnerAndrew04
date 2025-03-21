@@ -1,5 +1,4 @@
 <?php
-
 use App\Http\Controllers\Api\MovieController;
 use App\Http\Controllers\Api\SessionController;
 use App\Http\Controllers\Api\TicketController;
