@@ -40,9 +40,9 @@ function isOccupied(sessionId: number, row: string, number: number): boolean {
   // If not purchased, use the seeded random occupation
   const seed = sessionId + row.charCodeAt(0) * 100 + number
   const randomValue = seededRandom(seed)
-  
+
   const rowIndex = row.charCodeAt(0) - 'A'.charCodeAt(0)
-  
+
   if (rowIndex < 4) {
     return randomValue < 0.4
   } else if (rowIndex < 8) {
@@ -55,14 +55,14 @@ function isOccupied(sessionId: number, row: string, number: number): boolean {
 onMounted(async () => {
   const sessionId = parseInt(route.params.id as string)
   const selectedSession = movieData.sessions.find(s => s.session.id === sessionId)
-  
+
   if (selectedSession) {
     session.value = selectedSession.session
     movie.value = selectedSession.movie
-    
+
     // Generate seats data with deterministic occupation
     const seatRows = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L']
-    seats.value = seatRows.flatMap(row => 
+    seats.value = seatRows.flatMap(row =>
       Array.from({ length: 10 }, (_, i) => ({
         row,
         number: i + 1,
@@ -82,7 +82,7 @@ const handleSubmit = async () => {
 
   error.value = ''
   isLoading.value = true
-  
+
   try {
     await sessionStore.purchaseTickets(
       session.value!.id,
@@ -106,12 +106,9 @@ const handleSubmit = async () => {
   <div class="min-h-screen bg-[var(--background)]" v-if="session && movie">
     <!-- Movie Hero Section -->
     <div class="relative h-[50vh] overflow-hidden">
-      <div class="absolute inset-0 bg-gradient-to-b from-transparent via-[var(--background)] to-[var(--background)]"></div>
-      <img 
-        :src="movie.poster" 
-        :alt="movie.title"
-        class="w-full h-full object-cover opacity-50"
-      >
+      <div class="absolute inset-0 bg-gradient-to-b from-transparent via-[var(--background)] to-[var(--background)]">
+      </div>
+      <img :src="movie.poster" :alt="movie.title" class="w-full h-full object-cover opacity-50">
     </div>
 
     <div class="container mx-auto px-4 -mt-32 relative z-10">
@@ -120,18 +117,14 @@ const handleSubmit = async () => {
           <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <!-- Movie Poster -->
             <div class="lg:col-span-1">
-              <img 
-                :src="movie.poster" 
-                :alt="movie.title" 
-                class="w-full rounded-lg shadow-lg"
-              >
+              <img :src="movie.poster" :alt="movie.title" class="w-full rounded-lg shadow-lg">
             </div>
 
             <!-- Movie Info -->
             <div class="lg:col-span-2">
               <h1 class="text-4xl font-bold mb-4">{{ movie.title }}</h1>
               <p class="text-[var(--text-secondary)] mb-6">{{ movie.plot }}</p>
-              
+
               <div class="grid grid-cols-2 gap-4 mb-6">
                 <div>
                   <p class="text-[var(--text-secondary)]">Data</p>
@@ -163,7 +156,7 @@ const handleSubmit = async () => {
           <!-- Purchase Form -->
           <div class="mt-12" v-if="sessionStore.selectedSeats.length > 0">
             <h2 class="text-2xl font-bold mb-6">Dades de compra</h2>
-            
+
             <div v-if="error" class="mb-4 p-4 bg-red-500/20 border border-red-500 rounded-lg text-red-500">
               {{ error }}
             </div>
@@ -172,35 +165,20 @@ const handleSubmit = async () => {
               <div class="space-y-4">
                 <div>
                   <label class="block text-[var(--text-secondary)] mb-2">Nom complet</label>
-                  <input
-                    v-model="customerData.name"
-                    type="text"
-                    required
-                    :disabled="isLoading"
-                    class="w-full px-4 py-2 rounded-lg bg-[var(--background)] border border-gray-700 text-[var(--text)] focus:outline-none focus:border-[var(--primary)]"
-                  >
+                  <input v-model="customerData.name" type="text" required :disabled="isLoading"
+                    class="w-full px-4 py-2 rounded-lg bg-[var(--background)] border border-gray-700 text-[var(--text)] focus:outline-none focus:border-[var(--primary)]">
                 </div>
                 <div>
                   <label class="block text-[var(--text-secondary)] mb-2">Email</label>
-                  <input
-                    v-model="customerData.email"
-                    type="email"
-                    required
-                    :disabled="isLoading"
-                    class="w-full px-4 py-2 rounded-lg bg-[var(--background)] border border-gray-700 text-[var(--text)] focus:outline-none focus:border-[var(--primary)]"
-                  >
+                  <input v-model="customerData.email" type="email" required :disabled="isLoading"
+                    class="w-full px-4 py-2 rounded-lg bg-[var(--background)] border border-gray-700 text-[var(--text)] focus:outline-none focus:border-[var(--primary)]">
                 </div>
                 <div>
                   <label class="block text-[var(--text-secondary)] mb-2">Telèfon</label>
-                  <input
-                    v-model="customerData.phone"
-                    type="tel"
-                    required
-                    :disabled="isLoading"
-                    class="w-full px-4 py-2 rounded-lg bg-[var(--background)] border border-gray-700 text-[var(--text)] focus:outline-none focus:border-[var(--primary)]"
-                  >
+                  <input v-model="customerData.phone" type="tel" required :disabled="isLoading"
+                    class="w-full px-4 py-2 rounded-lg bg-[var(--background)] border border-gray-700 text-[var(--text)] focus:outline-none focus:border-[var(--primary)]">
                 </div>
-                
+
                 <div class="pt-4 border-t border-gray-700">
                   <div class="flex justify-between items-center mb-4">
                     <span class="text-[var(--text-secondary)]">
@@ -211,11 +189,8 @@ const handleSubmit = async () => {
                     </span>
                   </div>
 
-                  <button
-                    type="submit"
-                    class="w-full btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
-                    :disabled="isLoading"
-                  >
+                  <button type="submit" class="w-full btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
+                    :disabled="isLoading">
                     <span v-if="isLoading">Processant...</span>
                     <span v-else>Confirmar compra</span>
                   </button>

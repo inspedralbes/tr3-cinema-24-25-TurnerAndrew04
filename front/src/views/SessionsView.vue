@@ -2,12 +2,13 @@
 import { ref, computed, onMounted } from 'vue'
 import type { Session, Movie } from '../types'
 import SessionCard from '../components/SessionCard.vue'
-import movieData from '../data/movies.json'
+import axios from 'axios'
 import { format } from 'date-fns'
 
 const sessions = ref<Array<{ session: Session, movie: Movie }>>([])
 const selectedDate = ref('')
 const availableDates = ref<string[]>([])
+const movies = ref<Movie[]>([]) // Aquí almacenamos las películas de la API
 
 const today = format(new Date(), 'yyyy-MM-dd')
 
@@ -16,17 +17,33 @@ const filteredSessions = computed(() => {
 })
 
 onMounted(async () => {
-  sessions.value = movieData.sessions
+  try {
+    // Obtener las películas desde la API
+    const responseMovies = await axios.get('http://localhost:8000/api/v1/movies')
+    movies.value = responseMovies.data
 
-  // Get unique dates from sessions
-  const dates = new Set(sessions.value.map(({ session }) => session.date))
-  availableDates.value = Array.from(dates).sort()
+    // Obtener las sesiones desde la API (asumiendo que existe una ruta como '/api/v1/sessions')
+    const responseSessions = await axios.get('http://localhost:8000/api/v1/sessions')
+    const sessionsData = responseSessions.data
 
-  // Set initial date to today if available, otherwise first available date
-  if (availableDates.value.includes(today)) {
-    selectedDate.value = today
-  } else if (availableDates.value.length > 0) {
-    selectedDate.value = availableDates.value[0]
+    // Asociar las sesiones con las películas basándote en el ID de la película
+    sessions.value = sessionsData.map((session: any) => {
+      const movie = movies.value.find((movie: any) => movie.id === session.movie_id)
+      return { session, movie }
+    })
+
+    // Obtener fechas únicas de las sesiones
+    const dates = new Set(sessions.value.map(({ session }) => session.date))
+    availableDates.value = Array.from(dates).sort()
+
+    // Establecer la fecha predeterminada
+    if (availableDates.value.includes(today)) {
+      selectedDate.value = today
+    } else if (availableDates.value.length > 0) {
+      selectedDate.value = availableDates.value[0]
+    }
+  } catch (error) {
+    console.error('Error al obtener las películas o sesiones:', error)
   }
 })
 

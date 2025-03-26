@@ -14,10 +14,10 @@ class CreateCinemaTables extends Migration
         Schema::create('movies', function (Blueprint $table) {
             $table->string('id')->primary(); // IMDB ID
             $table->string('title');
-            $table->string('year');
+            $table->string('year');  // Cambié de string a year
             $table->string('poster');
             $table->text('plot');
-            $table->string('duration');
+            $table->string('duration');  // Cambié de string a integer para duración (en minutos)
             $table->timestamps();
         });
 

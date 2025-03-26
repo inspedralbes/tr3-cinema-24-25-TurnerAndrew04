@@ -16,19 +16,15 @@ onMounted(async () => {
     <!-- Hero Section -->
     <div class="relative h-[70vh] overflow-hidden">
       <div class="absolute inset-0 bg-gradient-to-b from-transparent to-[var(--background)]"></div>
-      <img 
+      <img
         src="https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80"
-        alt="Cinema"
-        class="w-full h-full object-cover"
-      >
+        alt="Cinema" class="w-full h-full object-cover">
       <div class="absolute inset-0 flex items-center justify-center text-center">
         <div class="max-w-4xl px-4">
           <h1 class="text-5xl md:text-7xl font-bold mb-6">Cinema Pedralbes</h1>
-          <p class="text-xl md:text-2xl text-gray-200 mb-8">Descobreix la màgia del cinema en la millor pantalla de Barcelona</p>
-          <router-link
-            :to="{ name: 'sessions' }"
-            class="btn-primary text-lg"
-          >
+          <p class="text-xl md:text-2xl text-gray-200 mb-8">Descobreix la màgia del cinema en la millor pantalla de
+            Barcelona</p>
+          <router-link :to="{ name: 'sessions' }" class="btn-primary text-lg">
             Compra les teves entrades
           </router-link>
         </div>
@@ -39,12 +35,8 @@ onMounted(async () => {
     <div class="container mx-auto px-4 py-16">
       <h2 class="text-3xl font-bold mb-8">Sessions disponibles</h2>
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        <SessionCard
-          v-for="{ session, movie } in featuredSessions"
-          :key="session.id"
-          :session="session"
-          :movie="movie"
-        />
+        <SessionCard v-for="{ session, movie } in featuredSessions" :key="session.id" :session="session"
+          :movie="movie" />
       </div>
     </div>
 

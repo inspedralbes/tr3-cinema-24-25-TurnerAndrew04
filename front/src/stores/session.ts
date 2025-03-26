@@ -19,6 +19,17 @@ export const useSessionStore = defineStore('session', () => {
     }, 0)
   })
 
+/*************  ✨ Codeium Command ⭐  *************/
+  /**
+   * Selects a seat for the current session. 
+   * Throws an error if more than 10 seats are selected or if the seat is already selected.
+   * 
+   * @param seat - The seat object to be selected, containing row and number.
+   * @throws Will throw an error if the maximum of 10 seats per session is exceeded.
+   * @throws Will throw an error if the seat is already selected.
+   */
+
+/******  bdab2f97-2ce9-460a-b777-6c491be79560  *******/
   function selectSeat(seat: Seat) {
     if (selectedSeats.value.length >= 10) {
       throw new Error('Maximum 10 seats per session')
