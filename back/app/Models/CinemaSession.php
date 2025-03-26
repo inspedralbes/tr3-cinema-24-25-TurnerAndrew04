@@ -21,18 +21,27 @@ class CinemaSession extends Model
         'is_special_day' => 'boolean'
     ];
 
+    /**
+     * Relación con el modelo Movie (Película)
+     */
     public function movie(): BelongsTo
     {
         return $this->belongsTo(Movie::class);
     }
 
+    /**
+     * Relación con los asientos a través de la tabla intermedia 'session_seats'
+     */
     public function seats(): BelongsToMany
     {
         return $this->belongsToMany(Seat::class, 'session_seats')
-            ->withPivot('is_occupied')
-            ->withTimestamps();
+            ->withPivot('is_occupied')  // Relaciona el estado de ocupación
+            ->withTimestamps();  // Incluye los timestamps para saber cuándo se actualiza
     }
 
+    /**
+     * Relación con los tickets
+     */
     public function tickets(): HasMany
     {
         return $this->hasMany(Ticket::class);

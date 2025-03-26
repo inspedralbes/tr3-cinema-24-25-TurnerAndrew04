@@ -3,6 +3,7 @@ use App\Http\Controllers\Api\MovieController;
 use App\Http\Controllers\Api\SessionController;
 use App\Http\Controllers\Api\TicketController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\SeatController;
 
 Route::prefix('v1')->group(function () {
     Route::apiResource('movies', MovieController::class)->only(['index', 'show']);
@@ -12,3 +13,5 @@ Route::prefix('v1')->group(function () {
     Route::post('/buy-tickets', [TicketController::class, 'store']);
 });
 Route::post('/tickets', [TicketController::class, 'store']);
+// Ruta para obtener los asientos de una sesión específica
+Route::get('sessions/{sessionId}/seats', [SeatController::class, 'index']);
