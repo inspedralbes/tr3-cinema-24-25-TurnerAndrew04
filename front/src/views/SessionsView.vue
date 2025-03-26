@@ -22,7 +22,7 @@ onMounted(async () => {
     const responseMovies = await axios.get('http://localhost:8000/api/v1/movies')
     movies.value = responseMovies.data
 
-    // Obtener las sesiones desde la API (asumiendo que existe una ruta como '/api/v1/sessions')
+    // Obtener las sesiones desde la API
     const responseSessions = await axios.get('http://localhost:8000/api/v1/sessions')
     const sessionsData = responseSessions.data
 
