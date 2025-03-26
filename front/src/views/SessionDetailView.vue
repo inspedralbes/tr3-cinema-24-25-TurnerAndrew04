@@ -96,18 +96,21 @@ const handleSubmit = async () => {
 }
 
 async function purchaseTickets(sessionId: number, customerData: any) {
+
+  const payload = {
+    session_id: sessionId,
+    seats: sessionStore.selectedSeats, // Asegúrate que esta variable esté correctamente definida
+    customer_name: customerData.name,
+    customer_email: customerData.email,
+    customer_phone: customerData.phone,
+  }
+
   try {
     const response = await fetch('http://localhost:8000/api/tickets', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        session_id: sessionId,
-        seats: sessionStore.selectedSeats, // Asegúrate que esta variable esté correctamente definida
-        customer_name: customerData.name,
-        customer_email: customerData.email,
-        customer_phone: customerData.phone,
-        
-
+        data : payload
       })
     });
 
