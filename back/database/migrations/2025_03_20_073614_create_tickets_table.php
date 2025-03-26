@@ -17,6 +17,8 @@ return new class extends Migration
             $table->string('customer_email');
             $table->string('customer_phone');
             $table->decimal('price', 8, 2);
+            $table->boolean('isOccupied')->default(false);
+            $table->boolean('isVip')->default(false);
             $table->timestamps();
 
             // Ensure each seat can only be booked once per session

@@ -9,4 +9,6 @@ Route::prefix('v1')->group(function () {
     Route::apiResource('sessions', SessionController::class)->only(['index', 'show']);
     Route::post('/tickets', [TicketController::class, 'store']);
     Route::get('tickets', [TicketController::class, 'index']);
+    Route::post('/buy-tickets', [TicketController::class, 'store']);
 });
+Route::post('/tickets', [TicketController::class, 'store']);

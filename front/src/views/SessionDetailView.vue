@@ -32,12 +32,10 @@ function seededRandom(seed: number) {
 
 // Function to determine if a seat should be occupied based on session ID
 function isOccupied(sessionId: number, row: string, number: number): boolean {
-  // First check if the seat has been purchased
   if (ticketStore.isSeatOccupied(sessionId, row, number)) {
     return true
   }
 
-  // If not purchased, use the seeded random occupation
   const seed = sessionId + row.charCodeAt(0) * 100 + number
   const randomValue = seededRandom(seed)
 
@@ -60,7 +58,6 @@ onMounted(async () => {
     session.value = selectedSession.session
     movie.value = selectedSession.movie
 
-    // Generate seats data with deterministic occupation
     const seatRows = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L']
     seats.value = seatRows.flatMap(row =>
       Array.from({ length: 10 }, (_, i) => ({
@@ -74,7 +71,6 @@ onMounted(async () => {
 })
 
 const handleSubmit = async () => {
-  console.log("Selected seats:", sessionStore.selectedSeats);
   if (sessionStore.selectedSeats.length === 0) {
     error.value = 'Selecciona almenys un seient'
     return
@@ -84,10 +80,8 @@ const handleSubmit = async () => {
   isLoading.value = true
 
   try {
-    await sessionStore.purchaseTickets(
-      session.value!.id,
-      customerData.value
-    )
+    // Llamar a la función para comprar los tickets
+    await purchaseTickets(session.value!.id, customerData.value)
 
     // Redirect to ticket check view
     router.push({
@@ -98,6 +92,36 @@ const handleSubmit = async () => {
     error.value = err.message
   } finally {
     isLoading.value = false
+  }
+}
+
+async function purchaseTickets(sessionId: number, customerData: any) {
+  try {
+    const response = await fetch('http://localhost:8000/api/tickets', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        session_id: sessionId,
+        seats: sessionStore.selectedSeats, // Asegúrate que esta variable esté correctamente definida
+        customer_name: customerData.name,
+        customer_email: customerData.email,
+        customer_phone: customerData.phone,
+        
+
+      })
+    });
+
+    if (!response.ok) {
+      throw new Error('Error al comprar entradas');
+    }
+
+    const data = await response.json();
+    console.log('Tickets comprados:', data);
+
+    return data;
+  } catch (error) {
+    console.error('Error:', error);
+    throw error;
   }
 }
 </script>

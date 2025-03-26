@@ -14,7 +14,9 @@ class Ticket extends Model
         'customer_name',
         'customer_email',
         'customer_phone',
-        'price'
+        'price',
+        'isVip',
+        'isOccupied'
     ];
 
     public function session(): BelongsTo

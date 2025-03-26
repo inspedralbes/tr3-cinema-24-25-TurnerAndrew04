@@ -4,14 +4,14 @@ import type { Ticket } from '../types'
 
 export const useTicketStore = defineStore('tickets', () => {
   // Initialize tickets from localStorage
-  const storedTickets = JSON.parse(localStorage.getItem('tickets') || '[]')
+  //const storedTickets = JSON.parse(localStorage.getItem('tickets') || '[]')
   const tickets = ref<{ [email: string]: Ticket[] }>({})
   const occupiedSeats = ref<{ [key: string]: boolean }>({})
 
   // Initialize tickets from localStorage
-  storedTickets.forEach((ticket: Ticket) => {
-    addTicket(ticket.customerEmail, ticket)
-  })
+  // storedTickets.forEach((ticket: Ticket) => {
+  //   addTicket(ticket.customerEmail, ticket)
+  // })
 
   function addTicket(email: string, ticket: Ticket) {
     if (!tickets.value[email]) {
