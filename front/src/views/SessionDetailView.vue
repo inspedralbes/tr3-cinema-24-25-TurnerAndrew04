@@ -27,20 +27,22 @@ const customerData = ref({
 // Fetch seats from the API
 async function fetchSeats(sessionId: number) {
   try {
-    const response = await fetch(`http://localhost:8000/api/sessions/${sessionId}/seats`)
-    if (!response.ok) {
-      throw new Error('Error fetching seats')
-    }
-    const data = await response.json()
-    // Transform the API data to match our Seat type
+    const response = await fetch(`http://localhost:8000/api/sessions/${sessionId}/seats`);
+    if (!response.ok) throw new Error('Error fetching seats');
+
+    const data = await response.json();
+
     return data.map((seat: any) => ({
-      ...seat,
-      isOccupied: seat.is_occupied, // Map the database field to our frontend field
-      disabled: seat.is_occupied // Add disabled property based on occupation
-    }))
+      id: seat.id,
+      row: seat.row,
+      number: seat.number,
+      isVip: seat.is_vip,
+      isOccupied: seat.is_occupied, // 
+      disabled: seat.is_occupied // Deshabilitar si está ocupado
+    }));
   } catch (error) {
-    console.error('Error fetching seats:', error)
-    throw error
+    console.error('Error fetching seats:', error);
+    throw error;
   }
 }
 
@@ -90,31 +92,29 @@ const handleSubmit = async () => {
 async function purchaseTickets(sessionId: number, customerData: any) {
   const payload = {
     session_id: sessionId,
-    seats: sessionStore.selectedSeats,
+    seats: sessionStore.selectedSeats.map(seat => ({ id: seat.id })), // Ahora debería funcionar
     customer_name: customerData.name,
     customer_email: customerData.email,
     customer_phone: customerData.phone,
   }
 
+  console.log("Payload enviado al backend:", payload);
+
   try {
     const response = await fetch('http://localhost:8000/api/tickets', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        data: payload
-      })
+      body: JSON.stringify(payload)
     });
 
-    if (!response.ok) {
-      throw new Error('Error al comprar entradas');
-    }
-
     const data = await response.json();
-    console.log('Tickets comprados:', data);
 
+    if (!response.ok) throw new Error(data.message || 'Error al comprar entradas');
+
+    console.log('Tickets comprados:', data);
     return data;
   } catch (error) {
-    console.error('Error:', error);
+    console.error('Error en la compra:', error);
     throw error;
   }
 }

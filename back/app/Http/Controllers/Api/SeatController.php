@@ -30,8 +30,8 @@ class SeatController extends Controller
                 'id' => $seat->id,
                 'row' => $seat->row,
                 'number' => $seat->number,
-                'is_vip' => $seat->pivot->is_vip ?? false,  // Corrección: usar el pivot correcto
-                'is_occupied' => $seat->pivot->is_occupied ?? false // Corrección: usar el pivot correcto
+                'is_vip' => $seat->is_vip,  // Corrección: usar el pivot correcto
+                'is_occupied' => $seat->is_occupied // Corrección: usar el pivot correcto
             ];
         }));
     }
