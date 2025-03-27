@@ -68,8 +68,8 @@ class DatabaseSeeder extends Seeder
                 Seat::create([
                     'row' => $row,
                     'number' => $number,
-                    'isOccupied' => false,
-                    'isVip' => $row === 'F',
+                    'is_occupied' => false,
+                    'is_vip' => $row === 'F',
                     'created_at' => now(),
                     'updated_at' => now(),
                 ]);
@@ -96,7 +96,7 @@ class DatabaseSeeder extends Seeder
                 DB::table('session_seat')->insert([
                     'cinema_session_id' => $session->id,
                     'seat_id' => $seat->id,
-                    'isOccupied' => false,
+                    'is_occupied' => false,
                     'created_at' => now(),
                     'updated_at' => now(),
                 ]);

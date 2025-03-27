@@ -55,8 +55,8 @@ class SessionController extends Controller
             return [
                 'row' => $seat->row,
                 'number' => $seat->number,
-                'isVip' => $seat->is_vip,
-                'isOccupied' => $seat->pivot->is_occupied, // Obtiene el estado de ocupación desde la tabla intermedia
+                'is_vip' => $seat->is_vip,
+                'is_occupied' => $seat->pivot->is_occupied, // Obtiene el estado de ocupación desde la tabla intermedia
             ];
         });
 

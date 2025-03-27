@@ -34,9 +34,9 @@ class CinemaSession extends Model
      */
     public function seats(): BelongsToMany
     {
-        return $this->belongsToMany(Seat::class, 'session_seats')
-            ->withPivot('is_occupied')  // Relaciona el estado de ocupación
-            ->withTimestamps();  // Incluye los timestamps para saber cuándo se actualiza
+        return $this->belongsToMany(Seat::class, 'session_seat')
+            ->withPivot('is_occupied')
+            ->withTimestamps();
     }
 
     /**

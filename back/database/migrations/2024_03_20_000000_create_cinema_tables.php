@@ -30,17 +30,28 @@ class CreateCinemaTables extends Migration
             $table->boolean('is_special_day')->default(false);
             $table->timestamps();
         });
-
         Schema::create('seats', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('cinema_session_id')->constrained()->onDelete('cascade'); // Relación con CinemaSession            $table->string('row');
+            $table->string('row'); // Asegurar que 'row' existe antes de usarlo en unique()
             $table->integer('number');
-            $table->boolean('isVip')->default(false);
-            $table->boolean('isOccupied')->default(false);
-            $table->unique(['row', 'number']);
-            $table->unique(['cinema_session_id', 'row', 'number']); // Aseguramos que no haya asientos duplicados en la misma sesión
+            $table->boolean('is_vip')->default(false);
+            $table->boolean('is_occupied')->default(false);
             $table->timestamps();
+        
+            // Agregar la restricción única
+            $table->unique(['row', 'number']);
         });
+
+        // Schema::create('seats', function (Blueprint $table) {
+        //     $table->id();
+        //     $table->foreignId('cinema_session_id')->constrained()->onDelete('cascade'); // Relación con CinemaSession            $table->string('row');
+        //     $table->integer('number');
+        //     $table->boolean('isVip')->default(false);
+        //     $table->boolean('isOccupied')->default(false);
+        //     $table->unique(['row', 'number']);
+        //     $table->unique(['cinema_session_id', 'row', 'number']); // Aseguramos que no haya asientos duplicados en la misma sesión
+        //     $table->timestamps();
+        // });
 
         // Add is_admin column to users table
         Schema::table('users', function (Blueprint $table) {

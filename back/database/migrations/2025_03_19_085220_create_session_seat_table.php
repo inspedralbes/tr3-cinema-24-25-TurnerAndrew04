@@ -15,8 +15,8 @@ return new class extends Migration
             $table->id();
             $table->foreignId('cinema_session_id')->constrained('cinema_sessions')->onDelete('cascade');
             $table->foreignId('seat_id')->constrained('seats')->onDelete('cascade');
-            $table->boolean('isOccupied')->default(false);
-            $table->boolean('isVip')->default(false);
+            $table->boolean('is_occupied')->default(false);
+            $table->boolean('is_vip')->default(false);
             $table->timestamps();
         });
     }

@@ -2,9 +2,8 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Models\Seat;
 use App\Models\CinemaSession;
-use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
 
 class SeatController extends Controller
@@ -15,13 +14,25 @@ class SeatController extends Controller
      * @param  int  $sessionId
      * @return \Illuminate\Http\JsonResponse
      */
-    public function index($sessionId)
+    public function index($sessionId): JsonResponse
     {
-        // Verificar si la sesión de cine existe
-        $session = CinemaSession::all();
-        
+        // Buscar la sesión en la base de datos con sus asientos
+        $session = CinemaSession::with('seats')->find($sessionId);
 
-        // Retornar los asientos como respuesta JSON
-        return response()->json($session);
+        // Si la sesión no existe, devolver un error 404
+        if (!$session) {
+            return response()->json(['message' => 'Sesión no encontrada'], 404);
+        }
+
+        // Mapear los asientos y devolverlos en formato JSON
+        return response()->json($session->seats->map(function ($seat) {
+            return [
+                'id' => $seat->id,
+                'row' => $seat->row,
+                'number' => $seat->number,
+                'is_vip' => $seat->pivot->is_vip ?? false,  // Corrección: usar el pivot correcto
+                'is_occupied' => $seat->pivot->is_occupied ?? false // Corrección: usar el pivot correcto
+            ];
+        }));
     }
 }
