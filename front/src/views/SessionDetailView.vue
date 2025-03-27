@@ -24,29 +24,23 @@ const customerData = ref({
   phone: ''
 })
 
-// Pseudo-random number generator with seed
-function seededRandom(seed: number) {
-  const x = Math.sin(seed) * 10000
-  return x - Math.floor(x)
-}
-
-// Function to determine if a seat should be occupied based on session ID
-function isOccupied(sessionId: number, row: string, number: number): boolean {
-  if (ticketStore.isSeatOccupied(sessionId, row, number)) {
-    return true
-  }
-
-  const seed = sessionId + row.charCodeAt(0) * 100 + number
-  const randomValue = seededRandom(seed)
-
-  const rowIndex = row.charCodeAt(0) - 'A'.charCodeAt(0)
-
-  if (rowIndex < 4) {
-    return randomValue < 0.4
-  } else if (rowIndex < 8) {
-    return randomValue < 0.3
-  } else {
-    return randomValue < 0.2
+// Fetch seats from the API
+async function fetchSeats(sessionId: number) {
+  try {
+    const response = await fetch(`http://localhost:8000/api/sessions/${sessionId}/seats`)
+    if (!response.ok) {
+      throw new Error('Error fetching seats')
+    }
+    const data = await response.json()
+    // Transform the API data to match our Seat type
+    return data.map((seat: any) => ({
+      ...seat,
+      isOccupied: seat.is_occupied, // Map the database field to our frontend field
+      disabled: seat.is_occupied // Add disabled property based on occupation
+    }))
+  } catch (error) {
+    console.error('Error fetching seats:', error)
+    throw error
   }
 }
 
@@ -58,15 +52,13 @@ onMounted(async () => {
     session.value = selectedSession.session
     movie.value = selectedSession.movie
 
-    const seatRows = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L']
-    seats.value = seatRows.flatMap(row =>
-      Array.from({ length: 10 }, (_, i) => ({
-        row,
-        number: i + 1,
-        isVip: row === 'F',
-        isOccupied: isOccupied(sessionId, row, i + 1)
-      }))
-    )
+    try {
+      // Fetch seats from the API
+      seats.value = await fetchSeats(sessionId)
+    } catch (err) {
+      error.value = 'Error loading seats'
+      console.error(err)
+    }
   }
 })
 
@@ -96,10 +88,9 @@ const handleSubmit = async () => {
 }
 
 async function purchaseTickets(sessionId: number, customerData: any) {
-
   const payload = {
     session_id: sessionId,
-    seats: sessionStore.selectedSeats, // Asegúrate que esta variable esté correctamente definida
+    seats: sessionStore.selectedSeats,
     customer_name: customerData.name,
     customer_email: customerData.email,
     customer_phone: customerData.phone,
@@ -110,7 +101,7 @@ async function purchaseTickets(sessionId: number, customerData: any) {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        data : payload
+        data: payload
       })
     });
 
@@ -176,6 +167,25 @@ async function purchaseTickets(sessionId: number, customerData: any) {
           <div class="mt-12">
             <h2 class="text-2xl font-bold mb-6">Selecció de seients</h2>
             <div class="bg-[var(--background)] p-8 rounded-lg">
+              <div v-if="error" class="mb-4 p-4 bg-red-500/20 border border-red-500 rounded-lg text-red-500">
+                {{ error }}
+              </div>
+              <div class="mb-4">
+                <div class="flex items-center gap-4 justify-center">
+                  <div class="flex items-center gap-2">
+                    <div class="w-4 h-4 bg-red-500 rounded"></div>
+                    <span>Ocupat</span>
+                  </div>
+                  <div class="flex items-center gap-2">
+                    <div class="w-4 h-4 bg-gray-500 rounded"></div>
+                    <span>Disponible</span>
+                  </div>
+                  <div class="flex items-center gap-2">
+                    <div class="w-4 h-4 bg-blue-500 rounded"></div>
+                    <span>Seleccionat</span>
+                  </div>
+                </div>
+              </div>
               <SeatMap :seats="seats" />
             </div>
           </div>

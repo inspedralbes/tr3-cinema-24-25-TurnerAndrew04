@@ -15,3 +15,4 @@ Route::prefix('v1')->group(function () {
 Route::post('/tickets', [TicketController::class, 'store']);
 // Ruta para obtener los asientos de una sesión específica
 Route::get('sessions/{sessionId}/seats', [SeatController::class, 'index']);
+Route::get('sessions/', [SessionController::class, 'index']);
