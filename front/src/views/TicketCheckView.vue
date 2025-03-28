@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
+import { jsPDF } from 'jspdf'
+import QRCode from 'qrcode'  // Importamos la librería de QR
 import type { User, Ticket } from '../types'
 import { useTicketStore } from '../stores/tickets'
 
@@ -22,7 +24,6 @@ const checkTickets = async () => {
   error.value = ''
   console.log('Checking tickets for:', email.value)
 
-  // Obtener los tickets desde el store
   const tickets = await ticketStore.getTicketsByEmail(email.value)
   console.log('Tickets found:', tickets)
 
@@ -32,10 +33,10 @@ const checkTickets = async () => {
     return
   }
 
-  // Asegúrate de que los tickets están correctamente estructurados con la relación a la película y sesión
   user.value = { email: email.value, tickets }
 }
 
+// Formatear la fecha (sin la hora)
 const formatDate = (date: string) => {
   const options: Intl.DateTimeFormatOptions = {
     weekday: 'long',
@@ -45,6 +46,56 @@ const formatDate = (date: string) => {
   }
 
   return new Date(date).toLocaleString('es-ES', options)
+}
+
+// Función para generar el QR (enlace al trailer)
+const generateQRCode = async (url: string) => {
+  return await QRCode.toDataURL(url)
+}
+
+// Generar PDF
+const downloadPDF = async () => {
+  const doc = new jsPDF()
+
+  // Para cada ticket, crear una página nueva
+  for (const ticket of user.value!.tickets) {
+    if (user.value!.tickets.indexOf(ticket) > 0) {
+      doc.addPage()  // Nueva página por cada entrada
+    }
+
+    // Añadir título
+    doc.setFontSize(18)
+    doc.text("Entrada de Cinema", 20, 20)
+
+    // Detalles de la entrada
+    doc.setFontSize(12)
+    let yPosition = 40
+    doc.text(`Pel·lícula: ${ticket.cinema_session.movie.title}`, 20, yPosition)
+    yPosition += 10
+    doc.text(`Reservat per: ${ticket.customer_name}`, 20, yPosition)
+    yPosition += 10
+    doc.text(`Seient: ${ticket.seat_id}`, 20, yPosition)
+    yPosition += 10
+    doc.text(`Preu: ${ticket.price}€`, 20, yPosition)
+    yPosition += 10
+    doc.text(`Data: ${formatDate(ticket.cinema_session.date)}`, 20, yPosition)
+    yPosition += 15
+
+    // Generar el QR (enlace al trailer)
+    // Aquí pondrías el enlace del trailer de la película (por ejemplo: YouTube)
+    const qrUrl = `https://www.youtube.com/watch?v=${ticket.cinema_session.movie.trailer_id}` // acabar
+    const qrCodeUrl = await generateQRCode(qrUrl)
+
+    // Añadir QR en la página
+    doc.addImage(qrCodeUrl, 'PNG', 160, 40, 30, 30) // Tamaño y posición del QR
+
+    // Añadir pie de página
+    doc.setFontSize(8)
+    doc.text("Escaneja el QR para veure el tràiler de la pel·lícula", 20, yPosition + 50)
+  }
+
+  // Descargar el PDF
+  doc.save("entrades.pdf")
 }
 </script>
 
@@ -82,9 +133,14 @@ const formatDate = (date: string) => {
           <!-- Mostrar precio de la entrada -->
           <p class="text-black"><strong>Preu:</strong> {{ ticket.price }}€</p>
 
-          <!-- Mostrar fecha sin hora -->
+          <!-- Mostrar fecha sin hora de la sesión -->
           <p class="text-black"><strong>Data:</strong> {{ formatDate(ticket.cinema_session.date) }}</p>
         </div>
+
+        <!-- Botón para descargar el PDF -->
+        <button @click="downloadPDF" class="bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700 mt-4">
+          Descarregar PDF
+        </button>
       </div>
     </div>
   </div>
