@@ -8,30 +8,21 @@ import { format } from 'date-fns'
 const sessions = ref<Array<{ session: Session, movie: Movie }>>([])
 const selectedDate = ref('')
 const availableDates = ref<string[]>([])
-const movies = ref<Movie[]>([])
 const error = ref('')
 const isLoading = ref(false)
 
 const today = format(new Date(), 'yyyy-MM-dd')
 
+// Filtrar sesiones por fecha seleccionada
 const filteredSessions = computed(() => {
   return sessions.value.filter(({ session }) => session.date === selectedDate.value)
 })
 
-const fetchMovies = async () => {
-  try {
-    const response = await axios.get('http://localhost:8000/api/v1/movies')
-    return response.data
-  } catch (error) {
-    console.error('Error fetching movies:', error)
-    throw new Error('Failed to fetch movies')
-  }
-}
-
+// Obtener sesiones desde la API
 const fetchSessions = async () => {
   try {
     const response = await axios.get('http://localhost:8000/api/v1/sessions')
-    return response.data
+    return response.data.sessions // Asegurar que accedemos al array de sesiones correctamente
   } catch (error) {
     console.error('Error fetching sessions:', error)
     throw new Error('Failed to fetch sessions')
@@ -43,33 +34,17 @@ onMounted(async () => {
   error.value = ''
 
   try {
-    // Fetch movies and sessions in parallel
-    const [moviesData, sessionsData] = await Promise.all([
-      fetchMovies(),
-      fetchSessions()
-    ])
+    const sessionsData = await fetchSessions()
 
-    movies.value = moviesData
-    
-    // Map sessions with their corresponding movies
-    sessions.value = sessionsData.map((session: Session) => {
-      const movie = movies.value.find(movie => movie.id === session.movieId)
-      if (!movie) {
-        throw new Error(`Movie not found for session ${session.id}`)
-      }
-      return { session, movie }
-    })
+    // Guardar sesiones directamente ya que el backend las devuelve con las películas incluidas
+    sessions.value = sessionsData
 
-    // Get unique dates from sessions
+    // Extraer fechas únicas de las sesiones
     const dates = new Set(sessions.value.map(({ session }) => session.date))
     availableDates.value = Array.from(dates).sort()
 
-    // Set default selected date
-    if (availableDates.value.includes(today)) {
-      selectedDate.value = today
-    } else if (availableDates.value.length > 0) {
-      selectedDate.value = availableDates.value[0]
-    }
+    // Seleccionar la fecha actual o la primera disponible
+    selectedDate.value = availableDates.value.includes(today) ? today : availableDates.value[0] || ''
   } catch (err) {
     error.value = 'Error loading sessions. Please try again later.'
     console.error('Error in onMounted:', err)
@@ -78,6 +53,7 @@ onMounted(async () => {
   }
 })
 
+// Formatear fecha
 const formatDate = (dateStr: string) => {
   return new Date(dateStr).toLocaleDateString('ca', {
     weekday: 'long',
@@ -87,6 +63,7 @@ const formatDate = (dateStr: string) => {
   })
 }
 
+// Verificar si la fecha es hoy
 const isToday = (dateStr: string) => dateStr === today
 </script>
 
