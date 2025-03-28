@@ -9,7 +9,7 @@ Route::prefix('v1')->group(function () {
     Route::apiResource('movies', MovieController::class)->only(['index', 'show']);
     Route::apiResource('sessions', SessionController::class)->only(['index', 'show']);
     Route::post('/tickets', [TicketController::class, 'store']);
-    Route::get('tickets', [TicketController::class, 'index']);
+    // Route::get('tickets', [TicketController::class, 'index']);
     Route::post('/buy-tickets', [TicketController::class, 'store']);
 });
 Route::post('/tickets', [TicketController::class, 'store']);
@@ -18,3 +18,7 @@ Route::get('sessions/{sessionId}/seats', [SeatController::class, 'index']);
 Route::get('sessions/', [SessionController::class, 'index']);
 Route::get('/v1/sessions', [SessionController::class, 'index']);
 Route::get('/v1/sessions/{session}', [SessionController::class, 'show']);
+// Route::get('/tickets', [TicketController::class, 'getByEmail']);
+Route::prefix('v1')->group(function () {
+    Route::get('/tickets', [TicketController::class, 'getByEmail']);
+});

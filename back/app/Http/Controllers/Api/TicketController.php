@@ -12,57 +12,72 @@ use App\Http\Controllers\Controller;
 class TicketController extends Controller
 {
     public function store(Request $request)
+    {
+        DB::beginTransaction();
+
+        try {
+            $session_id = $request->session_id;
+            $totalPrice = $request->price;
+            $seats = $request->seats;
+
+            foreach ($seats as $seat) {
+                $seatRecord = Seat::where('id', $seat['id'])->first();
+
+                if (!$seatRecord) {
+                    return response()->json(['message' => "El asiento con ID {$seat['id']} no existe"], 400);
+                }
+
+                // Verificar si el asiento ya está ocupado
+                $existingTicket = Ticket::where('cinema_session_id', $session_id)
+                    ->where('seat_id', $seatRecord->id)
+                    ->first();
+
+                if ($existingTicket) {
+                    return response()->json(['message' => "El asiento con ID {$seat['id']} ya está reservado"], 400);
+                }
+            }
+
+            // Crear y guardar los tickets
+            foreach ($seats as $seat) {
+                $seatRecord = Seat::where('id', $seat['id'])->first();
+
+                $ticket = new Ticket([
+                    'cinema_session_id' => $session_id,
+                    'seat_id' => $seatRecord->id,
+                    'customer_name' => $request->customer_name,
+                    'customer_email' => $request->customer_email,
+                    'customer_phone' => $request->customer_phone,
+                    'price' => $totalPrice / count($seats),
+                    'isOccupied' => true
+                ]);
+
+                $ticket->save();
+
+                // 🔥 Marcar el asiento como ocupado en la base de datos
+                $seatRecord->update(['is_occupied' => true]);
+            }
+
+            DB::commit();
+            return response()->json(['message' => 'Tickets comprados con éxito'], 200);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json(['error' => 'Hubo un error al procesar la compra', 'details' => $e->getMessage()], 500);
+        }
+    }
+    public function getByEmail(Request $request)
 {
-    DB::beginTransaction();
-
     try {
-        $session_id = $request->session_id;
-        $totalPrice = $request->price;
-        $seats = $request->seats;
+        $email = $request->query('email');
 
-        foreach ($seats as $seat) {
-            $seatRecord = Seat::where('id', $seat['id'])->first();
-
-            if (!$seatRecord) {
-                return response()->json(['message' => "El asiento con ID {$seat['id']} no existe"], 400);
-            }
-
-            // Verificar si el asiento ya está ocupado
-            $existingTicket = Ticket::where('cinema_session_id', $session_id)
-                                    ->where('seat_id', $seatRecord->id)
-                                    ->first();
-
-            if ($existingTicket) {
-                return response()->json(['message' => "El asiento con ID {$seat['id']} ya está reservado"], 400);
-            }
+        if (!$email) {
+            return response()->json(['error' => 'Email requerido'], 400);
         }
 
-        // Crear y guardar los tickets
-        foreach ($seats as $seat) {
-            $seatRecord = Seat::where('id', $seat['id'])->first();
+        $tickets = Ticket::where('customer_email', $email)->get();
 
-            $ticket = new Ticket([
-                'cinema_session_id' => $session_id,
-                'seat_id' => $seatRecord->id,
-                'customer_name' => $request->customer_name,
-                'customer_email' => $request->customer_email,
-                'customer_phone' => $request->customer_phone,
-                'price' => $totalPrice / count($seats),
-                'isOccupied' => true
-            ]);
-
-            $ticket->save();
-
-            // 🔥 Marcar el asiento como ocupado en la base de datos
-            $seatRecord->update(['is_occupied' => true]);
-        }
-
-        DB::commit();
-        return response()->json(['message' => 'Tickets comprados con éxito'], 200);
-
+        return response()->json(['tickets' => $tickets]);
     } catch (\Exception $e) {
-        DB::rollBack();
-        return response()->json(['error' => 'Hubo un error al procesar la compra', 'details' => $e->getMessage()], 500);
+        return response()->json(['error' => 'Error interno', 'details' => $e->getMessage()], 500);
     }
 }
 }

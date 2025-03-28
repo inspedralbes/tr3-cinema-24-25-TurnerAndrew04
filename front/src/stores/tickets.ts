@@ -24,8 +24,23 @@ export const useTicketStore = defineStore('tickets', () => {
     occupiedSeats.value[seatKey] = true
   }
 
-  function getTicketsByEmail(email: string) {
-    return tickets.value[email] || []
+  async function getTicketsByEmail(email: string) {
+    try {
+      const response = await fetch(`http://localhost:8000/api/v1/tickets?email=${email}`);
+      
+      if (!response.ok) {
+        throw new Error('Error al obtener los tickets');
+      }
+  
+      const data = await response.json();
+      console.log('Tickets desde la API:', data);
+  
+      tickets.value[email] = data.tickets; // Guarda en el store
+      return data.tickets;
+    } catch (error) {
+      console.error('Error:', error);
+      return [];
+    }
   }
   async function purchaseTickets(sessionId: number, customerData: any) {
     try {

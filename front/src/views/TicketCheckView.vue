@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
-import type { User } from '../types'
+import type { User, Ticket } from '../types'
 import { useTicketStore } from '../stores/tickets'
 import movieData from '../data/movies.json'
 
@@ -13,7 +13,6 @@ const user = ref<User | null>(null)
 const error = ref('')
 
 onMounted(() => {
-  // If email is provided in query params, auto-fill and check tickets
   if (route.query.email) {
     email.value = route.query.email as string
     checkTickets()
@@ -21,27 +20,30 @@ onMounted(() => {
 })
 
 const getMovieTitle = (sessionId: number) => {
+  // Revisa si `movieData` tiene `sessions`
+  if (!movieData.sessions) {
+    console.error('Sessions not found in movieData')
+    return 'Unknown Movie'
+  }
+
   const session = movieData.sessions.find(s => s.session.id === sessionId)
-  return session?.movie.title || 'Unknown Movie'
+  return session?.movie?.title || 'Unknown Movie'
 }
 
 const checkTickets = async () => {
   error.value = ''
   console.log('Checking tickets for:', email.value)
 
-  const tickets = ticketStore.getTicketsByEmail(email.value)
+  const tickets = await ticketStore.getTicketsByEmail(email.value)
   console.log('Tickets found:', tickets)
 
   if (!tickets || tickets.length === 0) {
-    error.value = 'No s\'han trobat entrades per aquest email'
+    error.value = "No s'han trobat entrades per aquest email"
     user.value = null
     return
   }
 
-  user.value = {
-    email: email.value,
-    tickets
-  }
+  user.value = { email: email.value, tickets }
 }
 </script>
 
