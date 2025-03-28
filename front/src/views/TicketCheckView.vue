@@ -42,10 +42,6 @@ const formatDate = (date: string) => {
     year: 'numeric',
     month: 'long',
     day: 'numeric',
-    hour: 'numeric',
-    minute: 'numeric',
-    second: 'numeric',
-    hour12: true,
   }
 
   return new Date(date).toLocaleString('es-ES', options)
@@ -86,8 +82,8 @@ const formatDate = (date: string) => {
           <!-- Mostrar precio de la entrada -->
           <p class="text-black"><strong>Preu:</strong> {{ ticket.price }}€</p>
 
-          <!-- Mostrar fecha y hora de la sesión -->
-          <p class="text-black"><strong>Data i Hora:</strong> {{ formatDate(ticket.cinema_session.date) }}</p>
+          <!-- Mostrar fecha sin hora -->
+          <p class="text-black"><strong>Data:</strong> {{ formatDate(ticket.cinema_session.date) }}</p>
         </div>
       </div>
     </div>

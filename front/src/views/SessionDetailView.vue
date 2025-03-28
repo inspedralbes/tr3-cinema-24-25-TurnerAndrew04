@@ -96,6 +96,7 @@ async function purchaseTickets(sessionId: number, customerData: any) {
     customer_name: customerData.name,
     customer_email: customerData.email,
     customer_phone: customerData.phone,
+    price: sessionStore.totalPrice, // Agregamos el precio total aquí
   }
 
   console.log("Payload enviado al backend:", payload);
