@@ -65,19 +65,15 @@ class TicketController extends Controller
         }
     }
     public function getByEmail(Request $request)
-{
-    try {
+    {
         $email = $request->query('email');
-
+    
         if (!$email) {
             return response()->json(['error' => 'Email requerido'], 400);
         }
-
-        $tickets = Ticket::where('customer_email', $email)->get();
-
+    
+        $tickets = Ticket::with(['cinemaSession.movie'])->where('customer_email', $email)->get();
+    
         return response()->json(['tickets' => $tickets]);
-    } catch (\Exception $e) {
-        return response()->json(['error' => 'Error interno', 'details' => $e->getMessage()], 500);
     }
-}
 }

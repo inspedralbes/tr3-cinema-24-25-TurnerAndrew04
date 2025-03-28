@@ -10,14 +10,20 @@ class Ticket extends Model
     protected $fillable = [
         'cinema_session_id',
         'seat_id',
-        'user_id',
         'customer_name',
         'customer_email',
         'customer_phone',
         'price',
-        'is_vip',
-        'is_occupied'
+        'isOccupied',
     ];
+
+
+    // Relación con CinemaSession
+    public function cinemaSession()
+    {
+        return $this->belongsTo(CinemaSession::class);
+    }
+
 
     public function session(): BelongsTo
     {
